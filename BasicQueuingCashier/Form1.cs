@@ -28,5 +28,6 @@ namespace BasicQueuingCashier
             CashierClass.getNumberInQueue = lblQueue.Text;
             CashierClass.CashierQueue.Enqueue(CashierClass.getNumberInQueue);
         }
+       
     }
 }

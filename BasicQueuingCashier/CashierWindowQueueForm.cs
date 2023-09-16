@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Remoting;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -13,14 +14,39 @@ namespace BasicQueuingCashier
 {
     public partial class CashierWindowQueueForm : Form
     {
-       // private CustomerView customerView;
+        private Timer timer;
         public CashierWindowQueueForm()
         {
             InitializeComponent();
-            //  customerView = new CustomerView();
-            //  customerView.Show();
-           
+            InitializeTimer();
+
+
+            Timer timer = new Timer();
+            timer.Interval = (1 * 1000);
+            timer.Tick += new EventHandler(timer1_Tick);
+            timer.Start();
         }
+        private void InitializeTimer()
+        {
+            Timer timer = new Timer();
+            timer.Interval = (1 * 1000);
+            timer.Tick += new EventHandler(timer1_Tick);
+            timer.Start();
+        }
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            RemoveCompletedItems();
+            DisplayCashierQueue(CashierClass.CashierQueue);
+        }
+
+        private void RemoveCompletedItems()
+        {
+            if (CashierClass.CashierQueue.Count > 0)
+            {
+                CashierClass.CashierQueue.Dequeue(); //Remove the first item in the queue.
+            }
+        }
+
         public void DisplayCashierQueue(IEnumerable CashierList)
         {
             listCashierQueue.Items.Clear();
@@ -36,29 +62,22 @@ namespace BasicQueuingCashier
 
         private void btnNext_Click(object sender, EventArgs e)
         {
-            //listCashierQueue.Items.Remove();
-            foreach (object obj in listCashierQueue.Items)
-            {
-               
-            }
+            if (CashierClass.CashierQueue.Count != null && CashierClass.CashierQueue.Count > 0)
             {
                 if (CashierClass.CashierQueue.Contains(CashierClass.CashierQueue.Peek()))
                 {
                     string s = CashierClass.CashierQueue.Peek();
                 }
-                else
-                {
-                    MessageBox.Show("The queue is empty. " );
-                }
-                
+                CashierClass.CashierQueue.Dequeue();
+            }
+            else
+            {
+                MessageBox.Show("The queue is empty.", "Warning!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
         public void timer1_Tick(object sender, EventArgs e)
         {
-            Timer timer = new Timer();
-            timer.Interval = (1 * 1000);
-            timer.Tick += new EventHandler(timer1_Tick);
-            timer.Start();
+            DisplayCashierQueue(CashierClass.CashierQueue);
         }
     }
 }
